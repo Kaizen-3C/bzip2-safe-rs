@@ -1,0 +1,17 @@
+[package]
+name = "libbzip2-rs"
+version = "0.1.0"
+edition = "2021"
+description = "bzip2 1.0.8 codec, C -> idiomatic safe Rust (#![forbid(unsafe_code)]), proven byte-identical to the C reference. Module layout mirrors trifectatechfoundation/libbzip2-rs (libbz2-rs-sys/src)."
+license = "bzip2-1.0.6"
+
+[lib]
+name = "libbzip2_rs"
+path = "src/lib.rs"
+
+[[bin]]
+name = "rdp"
+path = "src/main.rs"
+
+[profile.release]
+opt-level = 2

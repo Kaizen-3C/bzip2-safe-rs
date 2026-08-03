@@ -1,0 +1,11 @@
+# Status
+
+**Built + proven.** `make check` passes: the Rust port is byte-identical to bzip2 1.0.8 over 265 differential
+commands (compress + decompress, `small=0`/`small=1`, valid + malformed streams), with `#![forbid(unsafe_code)]`
+across the whole codec.
+
+- **Layout:** re-cut to one file per module, mirroring `libbz2-rs-sys/src` in
+  [trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs), for
+  module-for-module diffing.
+- **Scope:** the bzip2 codec buffer API (`BZ2_bzBuffToBuffCompress`/`Decompress`). Not the stream/file API.
+- **Sibling road:** [libbzip2-safe-c](https://github.com/Kaizen-3C/libbzip2-safe-c) (C → memory-safe C).
