@@ -39,17 +39,20 @@ harness/        corpus generator + check runner
 
 ## Three roads, one subject
 
-This repo is the **C → Rust** road. A sibling repo takes the same bzip2 to **memory-safe C** —
-keeping the language and ABI while removing the memory-unsafety by construction:
+This repo is the **C → Rust** road. Sibling repos take the same bzip2 to **memory-safe C** (keep the language
+and ABI) and lift an existing **c2rust** transliteration to **safe Rust** — the same subject reached three ways:
 
 | | mechanism | on the CVE-2019-12900 selector overflow |
 |---|---|---|
 | **C 1.0.8** (baseline) | hand-added bounds guard | graceful error return |
 | **[libbzip2-safe-c](https://github.com/Kaizen-3C/libbzip2-safe-c)** (C → safe-C) | the bound travels with the write (structural) | byte-identical, refuses the OOB |
 | **libbzip2-rs** (this repo, C → Rust) | the language refuses the write | typed error / panic — no OOB by construction |
+| **[libbzip2-safe-rust](https://github.com/Kaizen-3C/libbzip2-safe-rust)** (c2rust → safe Rust) | the language refuses the write | typed error / panic — no OOB by construction |
 
-A third road — lifting an existing **c2rust** transliteration to safe Rust — is the active frontier and not
-published here.
+All three keep this module layout, so you can diff `decompress` across the two Rust roads and against
+`decompress.c` — and all three against
+[trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs), the drop-in this
+layout mirrors.
 
 ## Honest scope
 
