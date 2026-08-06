@@ -48,7 +48,8 @@ safe Rust, and to a **contract-honored** drop-in — the same subject reached fo
 | **[libbzip2-safe-c](https://github.com/Kaizen-3C/libbzip2-safe-c)** (C → safe-C) | the bound travels with the write (structural) | byte-identical, refuses the OOB |
 | **libbzip2-rs** (this repo, C → Rust) | the language refuses the write | typed error / panic — no OOB by construction |
 | **[libbzip2-safe-rust](https://github.com/Kaizen-3C/libbzip2-safe-rust)** (c2rust → safe Rust) | the language refuses the write | typed error / panic — no OOB by construction |
-| **[libbzip2-contract-honored-rs](https://github.com/Kaizen-3C/libbzip2-contract-honored-rs)** (contract-honored drop-in) | the language refuses the write | typed error / panic — no OOB by construction |
+| **[libbzip2-contract-honored-rs](https://github.com/Kaizen-3C/libbzip2-contract-honored-rs)** (C → contract-honored) | the language refuses the write | typed error / panic — no OOB by construction |
+| **[libbzip2-contract-honored-lift](https://github.com/Kaizen-3C/libbzip2-contract-honored-lift)** (c2rust → contract-honored) | the language refuses the write | typed error / panic — no OOB by construction |
 
 They keep this module layout, so you can diff `decompress` across the Rust roads and against `decompress.c` — and
 against [trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs), the drop-in
