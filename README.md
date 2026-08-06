@@ -50,7 +50,7 @@ safe Rust, and to a **contract-honored** drop-in — the same subject reached fo
 | **libbzip2-safe-c** (C → safe-C) | the bound travels with the write (structural) | byte-identical, refuses the OOB |
 | **libbzip2-rs** (this repo, C → Rust) | the language refuses the write | typed error / panic — no OOB by construction |
 | **libbzip2-safe-rust** (c2rust → safe Rust) | the language refuses the write | typed error / panic — no OOB by construction |
-| **libbzip2-contract-honored-rs** (C → contract-honored) | the language refuses the write | typed error / panic — no OOB by construction |
+| **[libbzip2-contract-honored-rs](https://github.com/Kaizen-3C/libbzip2-contract-honored-rs)** (C → contract-honored) | the language refuses the write | typed error / panic — no OOB by construction |
 | **libbzip2-contract-honored-lift** (c2rust → contract-honored) | the language refuses the write | typed error / panic — no OOB by construction |
 
 They keep this module layout, so you can diff `decompress` across the Rust roads and against `decompress.c` — and
@@ -61,7 +61,7 @@ this layout mirrors.
 zero `unsafe` by owning their own memory and de-aliasing bzip2's shared buffers — simplest, and clean over
 multi-block inputs — but that *relaxes* what a drop-in `libbz2` caller asked for. If you need a drop-in that
 honors the **caller's allocator** and bzip2's exact **memory profile** (aliased working buffers, the C ABI),
-that's **libbzip2-contract-honored-rs**: it keeps a bounded,
+that's **[libbzip2-contract-honored-rs](https://github.com/Kaizen-3C/libbzip2-contract-honored-rs)**: it keeps a bounded,
 **Miri-proven-sound** boundary `unsafe` instead (contract-honored; single-block today, multi-block its growing
 frontier).
 
