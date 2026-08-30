@@ -25,6 +25,10 @@ PASS: Rust port byte-identical to bzip2 1.0.8 over 265 commands
       (compress + decompress, small=0 and small=1, valid + malformed streams; 0 unsafe)
 ```
 
+For how the port was structured — the leaf-first dependency schedule, the integration envelope, and the two
+defects the whole-project differential caught that per-module checking could not — see
+[`docs/WHOLE-PROJECT-RUN.md`](docs/WHOLE-PROJECT-RUN.md).
+
 ## Layout
 
 ```
@@ -35,6 +39,7 @@ src/            the Rust codec — one file per module (mirrors libbz2-rs-sys/sr
   main.rs       the R/D/P differential driver (bin `rdp`)
 c/              pinned upstream bzip2 1.0.8 source + the C side of the differential driver
 harness/        corpus generator + check runner
+docs/           how the port was scheduled, and what the whole-project differential caught
 ```
 
 ## Four roads, one subject
