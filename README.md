@@ -1,5 +1,8 @@
 # libbzip2-rs
 
+[![CI — differential vs bzip2 1.0.8](https://github.com/Kaizen-3C/libbzip2-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/Kaizen-3C/libbzip2-rs/actions/workflows/ci.yml)
+[![unsafe: forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](src/lib.rs)
+
 **bzip2 1.0.8 codec, C → idiomatic safe Rust — proven byte-identical to the C reference.**
 
 A whole-codec port of bzip2's buffer API (`BZ2_bzBuffToBuffCompress` / `Decompress`) to `#![forbid(unsafe_code)]`
@@ -16,6 +19,10 @@ so you can diff module-for-module: our [`src/decompress.rs`](src/decompress.rs) 
 ```bash
 make check
 ```
+
+It also runs on every push and pull request, and once a week on its own, against both
+`clang` and `gcc` on x86-64 and arm64 — so a toolchain change that breaks the check
+shows up here rather than on your machine.
 
 Builds the C reference (upstream 1.0.8) and the Rust port, runs both over the corpus, and requires
 byte-for-byte identical output:
