@@ -1,0 +1,75 @@
+name: CI — differential vs bzip2 1.0.8
+
+# `make check` is the claim this repository makes: build the C reference and the Rust
+# port, run both over a shared corpus, require byte-for-byte identical output. Until now
+# nothing re-ran it anywhere, so "re-runnable on your machine" rested on one machine.
+#
+# Three things in here are deliberate, each learned the hard way on 2026-11-01:
+#
+#   * `ubuntu-latest` is NOT pinned. A sibling repository's harness stopped compiling
+#     when the image moved to a GCC that rejects implicit function declarations, and a
+#     fully pinned matrix would have stayed green while the proof was broken. For a
+#     repository whose whole claim is that the check re-runs on someone ELSE's machine,
+#     building against the newest toolchain is the feature, not the hazard.
+#
+#   * Both clang and gcc. The Makefile defaults to clang; most people who clone this
+#     have gcc, and gcc is the stricter of the two about exactly the things that broke
+#     elsewhere. Testing only the default would miss them.
+#
+#   * A weekly schedule. The breakage above sat unnoticed for three months because
+#     nothing ran between pushes. A repository offered as evidence has to be able to
+#     fail on its own, without someone happening to push.
+#
+# Package names are kept to real packages: a sibling's big-endian leg broke because
+# `qemu-user-static` became a virtual package and `apt-get install` exited before
+# building anything.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+  schedule:
+    # Mondays, 06:17 UTC. Off the hour so it is not queued with everything else.
+    - cron: '17 6 * * 1'
+
+permissions:
+  contents: read
+
+jobs:
+  differential:
+    name: make check · ${{ matrix.arch }} · ${{ matrix.cc }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest,   arch: x86-64, cc: clang }
+          - { os: ubuntu-latest,   arch: x86-64, cc: gcc }
+          - { os: ubuntu-24.04-arm, arch: arm64, cc: gcc }
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install the C compiler and make
+        run: sudo apt-get update -q && sudo apt-get install -yq ${{ matrix.cc }} make
+
+      - name: Ensure Rust
+        run: |
+          if ! command -v cargo >/dev/null; then
+            curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+            echo "$HOME/.cargo/bin" >> "$GITHUB_PATH"
+          fi
+          rustup default stable 2>/dev/null || true
+
+      - name: Record the toolchain under test
+        run: |
+          ${{ matrix.cc }} --version | head -1
+          cargo --version
+          python3 --version
+          uname -m
+
+      # The whole proof, in one command. harness/check.sh regenerates the corpus
+      # (deterministic, seeded), runs both binaries over it and diffs the output.
+      - name: make check (byte-identical to bzip2 1.0.8 over the corpus)
+        run: make check CC=${{ matrix.cc }}

@@ -1,5 +1,8 @@
 # libbzip2-rs
 
+[![CI — differential vs bzip2 1.0.8](https://github.com/Kaizen-3C/libbzip2-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/Kaizen-3C/libbzip2-rs/actions/workflows/ci.yml)
+[![unsafe: forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](src/lib.rs)
+
 **bzip2 1.0.8 codec, C → idiomatic safe Rust — proven byte-identical to the C reference.**
 
 A whole-codec port of bzip2's buffer API (`BZ2_bzBuffToBuffCompress` / `Decompress`) to `#![forbid(unsafe_code)]`
@@ -16,6 +19,10 @@ so you can diff module-for-module: our [`src/decompress.rs`](src/decompress.rs) 
 ```bash
 make check
 ```
+
+It also runs on every push and pull request, and once a week on its own, against both
+`clang` and `gcc` on x86-64 and arm64 — so a toolchain change that breaks the check
+shows up here rather than on your machine.
 
 Builds the C reference (upstream 1.0.8) and the Rust port, runs both over the corpus, and requires
 byte-for-byte identical output:
@@ -42,33 +49,20 @@ harness/        corpus generator + check runner
 docs/           how the port was scheduled, and what the whole-project differential caught
 ```
 
-## Four roads, one subject
-> **Staged release:** sibling repos shown **without a link** aren't public yet — they roll out over the coming weeks of the series.
+## One subject, more than one destination
 
+The same bzip2 can be taken to **safe Rust** (this repo) or to **hardened C** — and a drop-in that honors
+the caller's allocator and bzip2's exact memory profile (the aliased working buffers, the C ABI) is a third
+destination with a different trade-off. All are held to the same byte-identical standard against the C
+reference.
 
-This repo is the **C → Rust** road. Sibling repos take the same bzip2 to **memory-safe C**, to a lifted-from-**c2rust**
-safe Rust, and to a **contract-honored** drop-in — the same subject reached four ways:
+This repo is the simplest of them: it owns its own memory and de-aliases bzip2's shared buffers, which reaches
+zero `unsafe` and stays clean over multi-block inputs — but that *relaxes* what a drop-in `libbz2` caller
+asked for. If you need the drop-in contract kept exactly, that is the third destination, not this one.
 
-| | mechanism | on the CVE-2019-12900 selector overflow |
-|---|---|---|
-| **C 1.0.8** (baseline) | hand-added bounds guard | graceful error return |
-| **libbzip2-safe-c** (C → safe-C) | the bound travels with the write (structural) | byte-identical, refuses the OOB |
-| **libbzip2-rs** (this repo, C → Rust) | the language refuses the write | typed error / panic — no OOB by construction |
-| **libbzip2-safe-rust** (c2rust → safe Rust) | the language refuses the write | typed error / panic — no OOB by construction |
-| **[libbzip2-contract-honored-rs](https://github.com/Kaizen-3C/libbzip2-contract-honored-rs)** (C → contract-honored) | the language refuses the write | typed error / panic — no OOB by construction |
-| **libbzip2-contract-honored-lift** (c2rust → contract-honored) | the language refuses the write | typed error / panic — no OOB by construction |
-
-They keep this module layout, so you can diff `decompress` across the Rust roads and against `decompress.c` — and
-against [trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs), the drop-in
-this layout mirrors.
-
-**Which one did you ask for?** All are byte-identical safe ports. This repo (and libbzip2-safe-rust) reach
-zero `unsafe` by owning their own memory and de-aliasing bzip2's shared buffers — simplest, and clean over
-multi-block inputs — but that *relaxes* what a drop-in `libbz2` caller asked for. If you need a drop-in that
-honors the **caller's allocator** and bzip2's exact **memory profile** (aliased working buffers, the C ABI),
-that's **[libbzip2-contract-honored-rs](https://github.com/Kaizen-3C/libbzip2-contract-honored-rs)**: it keeps a bounded,
-**Miri-proven-sound** boundary `unsafe` instead (contract-honored; single-block today, multi-block its growing
-frontier).
+The module layout is the same across destinations and mirrors
+[trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs), so you can diff
+`decompress` between them and against `decompress.c`.
 
 ## Honest scope
 

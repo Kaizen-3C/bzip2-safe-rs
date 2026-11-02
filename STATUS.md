@@ -8,4 +8,4 @@ across the whole codec.
   [trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs), for
   module-for-module diffing.
 - **Scope:** the bzip2 codec buffer API (`BZ2_bzBuffToBuffCompress`/`Decompress`). Not the stream/file API.
-- **Sibling road:** [libbzip2-safe-c](https://github.com/Kaizen-3C/libbzip2-safe-c) (C → memory-safe C).
+- **Sibling road:** the same bzip2 taken to hardened C, held to the same byte-identical standard.
