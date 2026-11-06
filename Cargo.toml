@@ -1,12 +1,12 @@
 [package]
-name = "libbzip2-rs"
+name = "bzip2-safe-rs"
 version = "0.1.0"
 edition = "2021"
-description = "bzip2 1.0.8 codec, C -> idiomatic safe Rust (#![forbid(unsafe_code)]), proven byte-identical to the C reference. Module layout mirrors trifectatechfoundation/libbzip2-rs (libbz2-rs-sys/src)."
+description = "bzip2 1.0.8 codec, C -> idiomatic safe Rust (#![forbid(unsafe_code)]), proven byte-identical to the C reference. One Rust module per upstream C file."
 license = "bzip2-1.0.6"
 
 [lib]
-name = "libbzip2_rs"
+name = "bzip2_safe_rs"
 path = "src/lib.rs"
 
 [[bin]]

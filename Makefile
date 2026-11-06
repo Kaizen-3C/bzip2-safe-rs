@@ -1,4 +1,4 @@
-# libbzip2-rs — bzip2 1.0.8 codec, C -> safe Rust. Differential proof: byte-identical to upstream 1.0.8.
+# bzip2-safe-rs — bzip2 1.0.8 codec, C -> safe Rust. Differential proof: byte-identical to upstream 1.0.8.
 #   make check   build the C reference + the Rust port, run both over a shared corpus, require identical
 #   make clean
 CC      ?= clang

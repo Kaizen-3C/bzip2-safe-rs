@@ -1,6 +1,6 @@
-# libbzip2-rs
+# bzip2-safe-rs
 
-[![CI — differential vs bzip2 1.0.8](https://github.com/Kaizen-3C/libbzip2-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/Kaizen-3C/libbzip2-rs/actions/workflows/ci.yml)
+[![CI — differential vs bzip2 1.0.8](https://github.com/Kaizen-3C/bzip2-safe-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/Kaizen-3C/bzip2-safe-rs/actions/workflows/ci.yml)
 [![unsafe: forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](src/lib.rs)
 
 **bzip2 1.0.8 codec, C → idiomatic safe Rust — proven byte-identical to the C reference.**
@@ -9,10 +9,11 @@ A whole-codec port of bzip2's buffer API (`BZ2_bzBuffToBuffCompress` / `Decompre
 Rust. The Rust output and upstream **bzip2 1.0.8** produce byte-for-byte identical results over a shared
 differential corpus — compress and decompress, `small=0` and `small=1`, valid **and** malformed streams.
 
-The module layout deliberately mirrors
-[trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs) (`libbz2-rs-sys/src`)
-so you can diff module-for-module: our [`src/decompress.rs`](src/decompress.rs) against theirs,
-[`src/blocksort.rs`](src/blocksort.rs) against theirs, and so on.
+The module layout is upstream bzip2's own — one Rust file per C file — so you can read the port against the
+source it came from: [`src/decompress.rs`](src/decompress.rs) against `c/src/decompress.c`,
+[`src/blocksort.rs`](src/blocksort.rs) against `c/src/blocksort.c`, and so on. Any other port that keeps
+upstream's split, [trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs)
+among them, can be read module-for-module the same way.
 
 ## Verify it yourself
 
@@ -60,9 +61,8 @@ This repo is the simplest of them: it owns its own memory and de-aliases bzip2's
 zero `unsafe` and stays clean over multi-block inputs — but that *relaxes* what a drop-in `libbz2` caller
 asked for. If you need the drop-in contract kept exactly, that is the third destination, not this one.
 
-The module layout is the same across destinations and mirrors
-[trifectatechfoundation/libbzip2-rs](https://github.com/trifectatechfoundation/libbzip2-rs), so you can diff
-`decompress` between them and against `decompress.c`.
+The module layout is the same across destinations — upstream's — so you can diff `decompress` between them,
+and each of them against `decompress.c`.
 
 ## Honest scope
 
