@@ -46,7 +46,7 @@ fn process_line(line: &str) {
     if op == 'R' {
         let mut comp = vec![0u8; 300000];
         let mut comp_len = comp.len() as u32;
-        let rc = libbzip2_rs::bzlib::BZ2_bzBuffToBuffCompress(
+        let rc = bzip2_safe_rs::bzlib::BZ2_bzBuffToBuffCompress(
             &mut comp,
             &mut comp_len,
             &src,
@@ -56,18 +56,18 @@ fn process_line(line: &str) {
             30,
         );
         
-        print!("C {} {} ", rc, if rc == libbzip2_rs::bzlib::BZ_OK { comp_len } else { 0 });
-        if rc == libbzip2_rs::bzlib::BZ_OK {
+        print!("C {} {} ", rc, if rc == bzip2_safe_rs::bzlib::BZ_OK { comp_len } else { 0 });
+        if rc == bzip2_safe_rs::bzlib::BZ_OK {
             print_hex(&comp, comp_len as usize, 100000);
         } else {
             print!("-");
         }
         println!();
         
-        if rc == libbzip2_rs::bzlib::BZ_OK {
+        if rc == bzip2_safe_rs::bzlib::BZ_OK {
             let mut back = vec![0u8; 1048576];
             let mut back_len = back.len() as u32;
-            let rc2 = libbzip2_rs::bzlib::BZ2_bzBuffToBuffDecompress(
+            let rc2 = bzip2_safe_rs::bzlib::BZ2_bzBuffToBuffDecompress(
                 &mut back,
                 &mut back_len,
                 &comp,
@@ -76,18 +76,18 @@ fn process_line(line: &str) {
                 0,
             );
             
-            let status = if rc2 == libbzip2_rs::bzlib::BZ_OK && (back_len as usize) == src.len() && back[..src.len()] == src[..] {
+            let status = if rc2 == bzip2_safe_rs::bzlib::BZ_OK && (back_len as usize) == src.len() && back[..src.len()] == src[..] {
                 "OK"
             } else {
                 "MISMATCH"
             };
             
-            println!("R {} {} {}", rc2, if rc2 == libbzip2_rs::bzlib::BZ_OK { back_len } else { 0 }, status);
+            println!("R {} {} {}", rc2, if rc2 == bzip2_safe_rs::bzlib::BZ_OK { back_len } else { 0 }, status);
         }
     } else if op == 'D' {
         let mut back = vec![0u8; 1048576];
         let mut back_len = back.len() as u32;
-        let rc = libbzip2_rs::bzlib::BZ2_bzBuffToBuffDecompress(
+        let rc = bzip2_safe_rs::bzlib::BZ2_bzBuffToBuffDecompress(
             &mut back,
             &mut back_len,
             &src,
@@ -96,8 +96,8 @@ fn process_line(line: &str) {
             0,
         );
         
-        print!("D {} {} ", rc, if rc == libbzip2_rs::bzlib::BZ_OK { back_len } else { 0 });
-        if rc == libbzip2_rs::bzlib::BZ_OK {
+        print!("D {} {} ", rc, if rc == bzip2_safe_rs::bzlib::BZ_OK { back_len } else { 0 });
+        if rc == bzip2_safe_rs::bzlib::BZ_OK {
             print_hex(&back, back_len as usize, 64);
         } else {
             print!("-");
@@ -106,7 +106,7 @@ fn process_line(line: &str) {
     } else if op == 'P' {
         let mut comp = vec![0u8; 300000];
         let mut comp_len = comp.len() as u32;
-        let rc = libbzip2_rs::bzlib::BZ2_bzBuffToBuffCompress(
+        let rc = bzip2_safe_rs::bzlib::BZ2_bzBuffToBuffCompress(
             &mut comp,
             &mut comp_len,
             &src,
